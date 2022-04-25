@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { faKey, faUser, faVideo, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
-import { setIsCreatingRoom } from '../redux/slices/RoomSlice';
+import { setIsCreatingRoom, setIsUsingPassword } from '../redux/slices/RoomSlice';
 
 function CreateRoom() {
     const dispatch = useDispatch();
-    const [usePassword, setUsePassword] = useState(false);
+    const isUsingPassword = useSelector(state => state.room.isUsingPassword);
     const isCreatingRoom = useSelector(state => state.room.isCreatingRoom);
 
     return (
@@ -43,13 +43,13 @@ function CreateRoom() {
                     aria-describedby="password-checkbox" 
                     type="checkbox" 
                     className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300" 
-                    checked={usePassword}
-                    onChange={(e) => setUsePassword(!usePassword)}
+                    checked={isUsingPassword}
+                    onChange={(e) => dispatch(setIsUsingPassword(!isUsingPassword))}
                 />
                 <label for="password-checkbox" className="ml-3 text-xs font-medium text-gray-900">I want to use a custom password.</label>
             </div>
             {
-                usePassword
+                isUsingPassword
                 &&
                 <div className="mb-2">
                     <label htmlFor="password" className="text-left block mb-2 text-sm font-medium text-gray-900">Password</label>
