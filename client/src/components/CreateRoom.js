@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { faKey, faUser, faVideo, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +14,7 @@ function CreateRoom() {
             <button 
                 type="button" 
                 className="absolute top-2 md:left-5 left-1 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center mr-2"
-                onClick={(e) => isCreatingRoom && dispatch(setIsCreatingRoom(false))}
+                onClick={() => isCreatingRoom && dispatch(setIsCreatingRoom(false))}
             >
                 <FontAwesomeIcon className="md:px-1 md:py-1 mr-1" icon={faAngleLeft} /> Back
             </button>
@@ -44,7 +44,7 @@ function CreateRoom() {
                     type="checkbox" 
                     className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300" 
                     checked={isUsingPassword}
-                    onChange={(e) => dispatch(setIsUsingPassword(!isUsingPassword))}
+                    onChange={() => dispatch(setIsUsingPassword(!isUsingPassword))}
                 />
                 <label for="password-checkbox" className="ml-3 text-xs font-medium text-gray-900">I want to use a custom password.</label>
             </div>
