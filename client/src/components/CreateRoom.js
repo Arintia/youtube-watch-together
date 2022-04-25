@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
-import { faKey, faUser, faVideo, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faKey, faUser, faVideo, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsCreatingRoom } from '../redux/slices/RoomSlice';
 
 function CreateRoom() {
+    const dispatch = useDispatch();
     const [usePassword, setUsePassword] = useState(false);
+    const isCreatingRoom = useSelector(state => state.room.isCreatingRoom);
+
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center">
+        <div className="relative w-full h-full flex flex-col items-center justify-center">
+            <button 
+                type="button" 
+                className="absolute top-2 md:left-5 left-1 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center mr-2"
+                onClick={(e) => isCreatingRoom && dispatch(setIsCreatingRoom(false))}
+            >
+                <FontAwesomeIcon className="md:px-1 md:py-1 mr-1" icon={faAngleLeft} /> Back
+            </button>
             <h2 className="text-4xl text-black font-bold mb-4">Create a Room</h2>
             <div className="mb-2">
                 <label htmlFor="username" className="text-left block mb-2 text-sm font-medium text-gray-900">Username</label>

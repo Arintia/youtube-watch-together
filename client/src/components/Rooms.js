@@ -1,12 +1,13 @@
 import React from 'react';
 import { faArrowRightToBracket, faLock, faLockOpen, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import placeholder from "../asset/placeholder.png";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setIsCreatingRoom } from '../redux/slices/RoomSlice';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Rooms() {
     const dispatch = useDispatch();
+    const isCreatingRoom = useSelector(state => state.room.isCreatingRoom);
     return (
     <React.Fragment>
         <header className="flex rounded-3xl md:flex-row flex-col justify-evenly items-center w-full max-h-24 mt-2">
@@ -20,7 +21,7 @@ function Rooms() {
                 <button 
                 type="button" 
                 className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 w-full md:mt-0 mt-2"
-                onClick={(e) => dispatch(setIsCreatingRoom(true))}
+                onClick={(e) => !isCreatingRoom && dispatch(setIsCreatingRoom(true))}
                 >
                 <FontAwesomeIcon className="w-4 h-4 mr-2 -ml-1" icon={faPlus} />
                 Create new
