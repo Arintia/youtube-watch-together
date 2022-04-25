@@ -12,6 +12,7 @@
   },
   "author": "Yigit Atak",
   "license": "MIT",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/Arintia/youtube-watch-together/issues"
   },

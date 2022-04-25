@@ -24,9 +24,9 @@ let rooms = [
     {
         id: uid(),
         ownerName: "Test",
-        thumbnailImg: "test",
+        thumbnailImg: "https://i.ytimg.com/vi/UTFnBsJUN00/hqdefault.jpg",
         roomName: "Test's Room",
-        participantCount: 10,
+        participantCount: 1,
         isLocked: true,
         customPassword: "12345"
     }

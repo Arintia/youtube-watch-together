@@ -1,8 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const fetchRooms = createAsyncThunk(
+    'rooms/fetchRooms',
+    async() => {
+        const res = await axios("http://localhost:3001/rooms");
+        return res.data;
+    }
+)
 
 export const RoomSlice = createSlice({
     name: "room",
     initialState: {
+        rooms: [],
         isCreatingRoom: false,
         isUsingPassword: false
     },
@@ -13,6 +23,13 @@ export const RoomSlice = createSlice({
         setIsUsingPassword: (state, action) => {
             state.isUsingPassword = action.payload;
         }
+    },
+    extraReducers: (room) => {
+        room.addCase(fetchRooms.fulfilled, (state, action) => {
+            if(action.payload !== state.rooms) {
+                state.rooms = action.payload;
+            }
+        })
     }
 });
 

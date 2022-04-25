@@ -1,13 +1,15 @@
 import React from 'react';
-import { faArrowRightToBracket, faLock, faLockOpen, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
-import placeholder from "../asset/placeholder.png";
+import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { setIsCreatingRoom } from '../redux/slices/RoomSlice';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useFetchRooms } from '../hooks/useFetchRooms';
+import Room from './Room';
 
 function Rooms() {
     const dispatch = useDispatch();
     const isCreatingRoom = useSelector(state => state.room.isCreatingRoom);
+    const rooms = useFetchRooms();
     return (
     <React.Fragment>
         <header className="flex rounded-3xl md:flex-row flex-col justify-evenly items-center w-full max-h-24 mt-2">
@@ -30,20 +32,17 @@ function Rooms() {
             </div>
         </header>
         <div className="overflow-y-auto container h-full bg-gray-50 mt-3">
-            <div id="room" className="h-16 bg-white w-full border-t border-x border-solid border-slate-200 border-opacity-50 flex flex-row justify-start items-center">
-            <h2 className="w-1/5 text-center text-xl opacity-50">1</h2>
-            <div className="w-1/5">
-                <img src={placeholder} width="60px" height="35px" alt="Thumbnail"/>
-            </div>
-            <p className="w-1/5 text-center">Test's Room</p>
-            <p className="w-1/5 text-center"><span className="opacity-50 font-bold">10</span><br /> joined</p>
-            <div className="w-1/5 relative">
-                <FontAwesomeIcon icon={faLockOpen} />
-                <button type="button" className="absolute right-0 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center mr-2">
-                <FontAwesomeIcon icon={faArrowRightToBracket} />
-                </button>
-            </div>     
-            </div>
+            {rooms.map((room, index) => 
+                <Room 
+                    key={room.id} 
+                    id={room.id}
+                    count={index}
+                    thumbnailImg={room.thumbnailImg} 
+                    roomName={room.roomName} 
+                    participantCount={room.participantCount} 
+                    isLocked={room.isLocked}    
+                /> 
+            )}
         </div>
     </React.Fragment>
   );
