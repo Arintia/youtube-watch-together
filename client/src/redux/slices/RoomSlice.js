@@ -12,9 +12,7 @@ export const fetchRooms = createAsyncThunk(
 export const createRoom = createAsyncThunk(
     'rooms/createRoom',
     async(payload) => {
-        console.log(payload);
         const res = await axios.post(`http://localhost:3001/rooms`, payload);
-        console.log(res.data);
         return res.data;
     }
 )

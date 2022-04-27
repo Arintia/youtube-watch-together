@@ -1,14 +1,13 @@
-import express from "express";
+import express, { response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { uid } from "uid";
-
+import { youtube } from "./middleware/youtube.js";
 const app = express();
 const port = 3001;
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
 
 /**
  * Array of objects that stores the created rooms.
@@ -41,6 +40,21 @@ app.post("/rooms", (req, res) => {
         isLocked: req.body.isLocked,
         customPassword: req.body.customPassword,
     };
+    youtube.videos.list({
+        part: "snippet",
+        id: room.youtubeUrl
+    }).then((response) => {
+        const parsedData = response.data;
+        const totalResults = parsedData.pageInfo.totalResults;
+        if(!totalResults) {
+            // handle no result logic
+        } else {
+            room.thumbnailImg = parsedData.items[0].snippet.thumbnails.standard.url;
+        }
+    }).catch((err) => {
+        console.error(err);
+    });
+    
     rooms.push(room);
     return res.status(200).send(room);
 });
