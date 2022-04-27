@@ -20,17 +20,7 @@ app.use(bodyParser.json());
  * @param rooms.isLocked - True if the room is locked with a custom password, false if not.
  * @param rooms.customPassword - Custom password for the room, empty string if no custom password.
  */
-let rooms = [
-    {
-        id: uid(),
-        ownerName: "Test",
-        thumbnailImg: "https://i.ytimg.com/vi/UTFnBsJUN00/hqdefault.jpg",
-        roomName: "Test's Room",
-        participantCount: 1,
-        isLocked: true,
-        customPassword: "12345"
-    }
-];
+let rooms = [];
 
 /**
  * GET request that sends back the array of created rooms.
@@ -43,7 +33,7 @@ app.get("/rooms", (req, res) => res.status(200).send(rooms));
 app.post("/rooms", (req, res) => {
     const room = {
         id: uid(),
-        ownerName: req.body.nickName,
+        ownerName: req.body.nickname,
         thumbnailImg: "test",
         roomName: req.body.roomName,
         participantCount: 0,
