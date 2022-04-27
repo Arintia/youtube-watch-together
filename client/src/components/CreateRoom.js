@@ -19,6 +19,7 @@ function CreateRoom() {
         const newRoom = {
             nickname: nickname.current,
             roomName: `${nickname.current}'s Room`,
+            url: url.current,
             isLocked: isUsingPassword,
             customPassword: password.current
         }

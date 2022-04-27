@@ -34,6 +34,7 @@ app.post("/rooms", (req, res) => {
     const room = {
         id: uid(),
         ownerName: req.body.nickname,
+        youtubeUrl: req.body.url,
         thumbnailImg: "test",
         roomName: req.body.roomName,
         participantCount: 0,
