@@ -3,7 +3,6 @@ import { faArrowRightToBracket, faLock, faLockOpen } from '@fortawesome/free-sol
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Room({ id, count, thumbnailImg, roomName, participantCount, isLocked }) {
-    console.log(isLocked);
     return (
         <div id="room" className="h-16 bg-white w-full border-t border-x border-solid border-slate-200 border-opacity-50 flex flex-row justify-start items-center">
             <h2 className="w-1/5 text-center text-xl opacity-50">{count+1}</h2>
