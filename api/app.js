@@ -44,9 +44,8 @@ app.post("/rooms", (req, res) => {
     const room = {
         id: uid(),
         ownerName: req.body.nickName,
-        thumbnailImg: req.body.thumbnailImg,
+        thumbnailImg: "test",
         roomName: req.body.roomName,
-        director: req.body.director,
         participantCount: 0,
         isLocked: req.body.isLocked,
         customPassword: req.body.customPassword,

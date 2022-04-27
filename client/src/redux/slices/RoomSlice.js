@@ -7,6 +7,16 @@ export const fetchRooms = createAsyncThunk(
         const res = await axios("http://localhost:3001/rooms");
         return res.data;
     }
+);
+
+export const createRoom = createAsyncThunk(
+    'rooms/createRoom',
+    async(payload) => {
+        console.log(payload);
+        const res = await axios.post(`http://localhost:3001/rooms`, payload);
+        console.log(res.data);
+        return res.data;
+    }
 )
 
 export const RoomSlice = createSlice({
@@ -29,7 +39,10 @@ export const RoomSlice = createSlice({
             if(action.payload !== state.rooms) {
                 state.rooms = action.payload;
             }
-        })
+        },
+        room.addCase(createRoom.fulfilled, (state, action) => {
+            state.rooms.push(action.payload);
+        }))
     }
 });
 
