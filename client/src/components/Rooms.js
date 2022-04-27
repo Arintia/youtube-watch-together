@@ -1,5 +1,5 @@
 import React from 'react';
-import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSearch, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { setIsCreatingRoom } from '../redux/slices/RoomSlice';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,17 +32,27 @@ function Rooms() {
             </div>
         </header>
         <div className="overflow-y-auto container h-full bg-gray-50 mt-3">
-            {rooms.map((room, index) => 
-                <Room 
-                    key={room.id} 
-                    id={room.id}
-                    count={index}
-                    thumbnailImg={room.thumbnailImg} 
-                    roomName={room.roomName} 
-                    participantCount={room.participantCount} 
-                    isLocked={room.isLocked}    
-                /> 
-            )}
+            {
+                rooms.length > 0 
+                ?
+                rooms.map((room, index) => 
+                    <Room 
+                        key={room.id} 
+                        id={room.id}
+                        count={index}
+                        thumbnailImg={room.thumbnailImg} 
+                        roomName={room.roomName} 
+                        participantCount={room.participantCount} 
+                        isLocked={room.isLocked}    
+                    /> 
+                )
+                :
+                <div className="h-full w-full bg-white flex flex-col items-center justify-center">
+                    <FontAwesomeIcon className="text-6xl" icon={faTriangleExclamation} />
+                    <p>There are no rooms currently. Why don't you create one?</p>
+                </div>
+            }
+            
         </div>
     </React.Fragment>
   );
