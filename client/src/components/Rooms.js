@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { faPlus, faSearch, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { setIsCreatingRoom } from '../redux/slices/RoomSlice';
@@ -9,7 +9,14 @@ import Room from './Room';
 function Rooms() {
     const dispatch = useDispatch();
     const isCreatingRoom = useSelector(state => state.room.isCreatingRoom);
+    const [searchKey, setSearchKey] = useState("");
     const rooms = useFetchRooms();
+    const [filteredRooms, setFilteredRooms] = useState([]);
+
+    useEffect(() => {
+        setFilteredRooms(rooms.filter(room => room.roomName.includes(searchKey)));
+    }, [searchKey, rooms]);
+
     return (
     <React.Fragment>
         <header className="flex rounded-3xl md:flex-row flex-col justify-evenly items-center w-full max-h-24 mt-2">
@@ -17,7 +24,13 @@ function Rooms() {
                 <div className="flex absolute top-3.5 left-0 items-center pl-3 pointer-events-none">
                 <FontAwesomeIcon className="opacity-50" icon={faSearch} />
                 </div>
-                <input type="text" className="bg-slate-50 border-none text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5" placeholder="Room name" />
+                <input 
+                    type="text" 
+                    className="bg-slate-50 border-none text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5" 
+                    placeholder="Room name" 
+                    value={searchKey}
+                    onChange={(e) => setSearchKey(e.target.value)}
+                />
             </div>
             <div>
                 <button 
@@ -33,9 +46,9 @@ function Rooms() {
         </header>
         <div className="overflow-y-auto container h-full bg-gray-50 mt-3">
             {
-                rooms.length > 0 
+                filteredRooms.length 
                 ?
-                rooms.map((room, index) => 
+                filteredRooms.map((room, index) => 
                     <Room 
                         key={room.id} 
                         id={room.id}
@@ -49,7 +62,7 @@ function Rooms() {
                 :
                 <div className="h-full w-full bg-white flex flex-col items-center justify-center">
                     <FontAwesomeIcon className="text-6xl" icon={faTriangleExclamation} />
-                    <p>There are no rooms currently. Why don't you create one?</p>
+                    <p className="text-center">You either searched for a non-existent room or there are no rooms currently. <br/>Why don't you create one?</p>
                 </div>
             }
             
