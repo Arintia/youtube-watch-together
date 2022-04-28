@@ -27,35 +27,46 @@ let rooms = [];
 app.get("/rooms", (req, res) => res.status(200).send(rooms));
 
 /**
- * POST request that creates a new room in the backend and returns the new room.
+ * POST request that creates a new room in the backend and returns an object that contains an error property and a data object.
  */
 app.post("/rooms", (req, res) => {
     const room = {
-        id: uid(),
-        ownerName: req.body.nickname,
-        youtubeUrl: req.body.url,
-        thumbnailImg: "test",
-        roomName: req.body.roomName,
-        participantCount: 0,
-        isLocked: req.body.isLocked,
-        customPassword: req.body.customPassword,
+        data: {
+            id: uid(),
+            ownerName: req.body.nickname,
+            youtubeUrl: req.body.url,
+            thumbnailImg: "test",
+            roomName: req.body.roomName,
+            participantCount: 0,
+            isLocked: req.body.isLocked,
+            customPassword: req.body.customPassword,
+        },
+        error: null
     };
+    const youtubeRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+    const regexMatch = room.data.youtubeUrl.match(youtubeRegex);
+    if(!regexMatch) {
+        room.error = "Invalid URL.";
+        return res.status(200).send(room);
+    } else {
+        room.data.youtubeUrl = regexMatch[1];
+    }
     youtube.videos.list({
         part: "snippet",
-        id: room.youtubeUrl
+        id: room.data.youtubeUrl
     }).then((response) => {
         const parsedData = response.data;
         const totalResults = parsedData.pageInfo.totalResults;
         if(!totalResults) {
-            // handle no result logic
+            throw new Error("No videos found.");
         } else {
-            room.thumbnailImg = parsedData.items[0].snippet.thumbnails.standard.url;
+            room.data.thumbnailImg = parsedData.items[0].snippet.thumbnails.default.url;
+            rooms.push(room.data);
         }
     }).catch((err) => {
-        console.error(err);
+        room.error = err.message;
+        console.error(err.message);
     });
-    
-    rooms.push(room);
     return res.status(200).send(room);
 });
 

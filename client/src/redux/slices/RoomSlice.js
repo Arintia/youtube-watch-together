@@ -22,7 +22,8 @@ export const RoomSlice = createSlice({
     initialState: {
         rooms: [],
         isCreatingRoom: false,
-        isUsingPassword: false
+        isUsingPassword: false,
+        roomCreateError: null
     },
     reducers: {
         setIsCreatingRoom: (state, action) => {
@@ -30,6 +31,9 @@ export const RoomSlice = createSlice({
         },
         setIsUsingPassword: (state, action) => {
             state.isUsingPassword = action.payload;
+        },
+        resetCreateError: (state, action) => {
+            state.roomCreateError = null;
         }
     },
     extraReducers: (room) => {
@@ -39,10 +43,16 @@ export const RoomSlice = createSlice({
             }
         },
         room.addCase(createRoom.fulfilled, (state, action) => {
-            state.rooms.push(action.payload);
+            const { data, error } = action.payload;
+            if(error !== null) {
+                state.roomCreateError = error;
+            } else {
+                state.rooms.push(data);
+                state.roomCreateError = null;
+            }
         }))
     }
 });
 
-export const { setIsCreatingRoom, setIsUsingPassword } = RoomSlice.actions;
+export const { setIsCreatingRoom, setIsUsingPassword, resetCreateError } = RoomSlice.actions;
 export default RoomSlice.reducer;
