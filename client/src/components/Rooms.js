@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsCreatingRoom } from '../redux/slices/RoomSlice';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFetchRooms } from '../hooks/useFetchRooms';
-import Room from './Room';
+import RoomListItem from './RoomListItem';
 
 function Rooms() {
     const dispatch = useDispatch();
@@ -49,7 +49,7 @@ function Rooms() {
                 filteredRooms.length 
                 ?
                 filteredRooms.map((room, index) => 
-                    <Room 
+                    <RoomListItem 
                         key={room.id} 
                         id={room.id}
                         count={index}
