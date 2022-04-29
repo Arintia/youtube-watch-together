@@ -35,6 +35,7 @@ app.post("/rooms", (req, res) => {
             id: uid(),
             ownerName: req.body.nickname,
             youtubeUrl: req.body.url,
+            videoName: null,
             thumbnailImg: "test",
             roomName: req.body.roomName,
             participantCount: 0,
@@ -60,6 +61,7 @@ app.post("/rooms", (req, res) => {
         if(!totalResults) {
             throw new Error("No videos found.");
         } else {
+            room.data.videoName = parsedData.items[0].snippet.title;
             room.data.thumbnailImg = parsedData.items[0].snippet.thumbnails.default.url;
             rooms.push(room.data);
         }
@@ -71,20 +73,13 @@ app.post("/rooms", (req, res) => {
 });
 
 /**
- * DELETE request that deletes a specific room from the created rooms and returns its unique ID.
+ * GET request that gets the data of a specific room from using its unique ID.
  */
-app.delete("/rooms/:id", (req, res) => {
+app.get("/rooms/:id", async (req, res) => {
     const id = req.params.id;
-    rooms = rooms.filter(room => id !== room.id);
-    return res.send(id);
-});
-
-/**
- * DELETE request that deletes all rooms.
- */
-app.delete("/rooms", (req, res) => {
-    rooms = [];
-    return res.send(rooms);
+    const roomData = await rooms.find(room => room.id === id);
+    if(roomData === undefined) return res.send(null);
+    return res.send(roomData);
 });
 
 app.listen(port, () => {

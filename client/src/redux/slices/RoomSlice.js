@@ -17,13 +17,26 @@ export const createRoom = createAsyncThunk(
     }
 )
 
+export const fetchRoomById = createAsyncThunk(
+    'rooms/fetchRoomById',
+    async(id) => {
+        const res = await axios(`http://localhost:3001/rooms/${id}`);
+        return res.data;
+    }
+)
+
 export const RoomSlice = createSlice({
     name: "room",
     initialState: {
         rooms: [],
         isCreatingRoom: false,
         isUsingPassword: false,
-        roomCreateError: null
+        roomCreateError: null,
+        createdRoomId: null,
+        viewingRoomData: {},
+        isRoomCreated: false,
+        isLoadingRoom: true,
+        completedRoomLoad: false
     },
     reducers: {
         setIsCreatingRoom: (state, action) => {
@@ -32,7 +45,7 @@ export const RoomSlice = createSlice({
         setIsUsingPassword: (state, action) => {
             state.isUsingPassword = action.payload;
         },
-        resetCreateError: (state, action) => {
+        resetCreateError: (state) => {
             state.roomCreateError = null;
         }
     },
@@ -46,11 +59,37 @@ export const RoomSlice = createSlice({
             const { data, error } = action.payload;
             if(error !== null) {
                 state.roomCreateError = error;
+                state.isRoomCreated = false;
             } else {
+                state.createdRoomId = data.id;
                 state.rooms.push(data);
                 state.roomCreateError = null;
+                state.isRoomCreated = true;
             }
-        }))
+        }),
+        room.addCase(createRoom.pending, (state) => {
+            state.isRoomCreated = false;
+        }),
+        room.addCase(createRoom.rejected, (state) => {
+            state.isRoomCreated = false;
+        }),
+        room.addCase(fetchRoomById.fulfilled, (state, action) => {
+            state.viewingRoomData = action.payload;
+            state.completedRoomLoad = true;
+            state.isLoadingRoom = false;
+            state.isCreatingRoom = false;
+            state.isRoomCreated = false;
+        }),
+        room.addCase(fetchRoomById.pending, (state) => {
+            state.completedRoomLoad = false;
+            state.isLoadingRoom = true;
+        }),
+        room.addCase(fetchRoomById.rejected, (state) => {
+            state.completedRoomLoad = true;
+            state.isLoadingRoom = false;
+            state.isRoomCreated = false;
+            state.roomCreateError = "Error fetching room";
+        }));
     }
 });
 
