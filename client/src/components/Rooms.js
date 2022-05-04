@@ -8,11 +8,26 @@ import RoomListItem from './RoomListItem';
 
 function Rooms() {
     const dispatch = useDispatch();
+    /**
+   * Tracks whether or not a user is currently trying to create a room(is on the input component)
+   */
     const isCreatingRoom = useSelector(state => state.room.isCreatingRoom);
+    /**
+     * State for the search key. Rooms are filtered by name using the search key.
+     */
     const [searchKey, setSearchKey] = useState("");
+    /**
+     * An array of rooms fetched with the custom useFetchRooms hook.
+     */
     const rooms = useFetchRooms();
+    /**
+     * State for the array of filtered rooms. Rooms are filtered by name using the search key.
+     */
     const [filteredRooms, setFilteredRooms] = useState([]);
 
+    /**
+     * If search key changes, the useEffect hook is called and it filters the rooms by name.
+     */
     useEffect(() => {
         setFilteredRooms(rooms.filter(room => room.roomName.includes(searchKey)));
     }, [searchKey, rooms]);
@@ -57,6 +72,7 @@ function Rooms() {
                         roomName={room.roomName} 
                         participantCount={room.participantCount} 
                         isLocked={room.isLocked}    
+                        password={room.customPassword}
                     /> 
                 )
                 :

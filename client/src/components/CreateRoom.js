@@ -26,6 +26,7 @@ function CreateRoom() {
     const url = useRef("");
     const password = useRef("");
 
+    
     const handleCreateRoom = async (e) => {
         e.preventDefault();
         setSubmitted(true);
@@ -39,8 +40,14 @@ function CreateRoom() {
         await dispatch(createRoom(newRoom));
     }
 
+    /**
+     * If the component dismounts, reset the creation error to avoid red text.
+     */
     useEffect(() => () => dispatch(resetCreateError()), [dispatch]);
 
+    /**
+     * After the room is created, navigate the user to the room they've created.
+     */
     useEffect(() => {
         setTimeout(() => {
             if(createdRoomId !== null && isRoomCreated) {
@@ -49,6 +56,9 @@ function CreateRoom() {
         }, 2000);
     }, [createdRoomId, navigate, isRoomCreated]);
 
+    /**
+     * If there's an error, set submitted state to false. This changes the button from "Loading" spinner to submit again.
+     */
     useEffect(() => {
         if(isError) setSubmitted(false);
     }, [isError])

@@ -4,25 +4,72 @@ import { faCrown, faEnvelope, faUsers } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { fetchRoomById } from "../redux/slices/RoomSlice";
+import { useEffect, useLayoutEffect, useMemo } from "react";
+import { fetchRoomById, resetViewingRoom, increaseRoomParticipant, decreaseRoomParticipant } from "../redux/slices/RoomSlice";
+import { io } from "socket.io-client";
 
 export default function Room() {
+    /**
+     * Used for checking URL params.
+     */
     const params = useParams();
+    /**
+     * Room ID fetched from the URL param.
+     */
     const roomId = params.roomid;
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    /**
+     * Tracks whether or not the Backend API call is processed, true if processed false if not.
+     */
     const completedRoomLoad = useSelector(state => state.room.completedRoomLoad);
+    /**
+     * Contains the data object of the room being viewed.
+     */
     const viewingRoomData = useSelector(state => state.room.viewingRoomData);
-    useEffect(() => {
+
+    /**
+     * Before DOM is painted, fetch the data for the room that's currently being viewed.
+     */
+    useLayoutEffect(() => {
         (async () => await dispatch(fetchRoomById(roomId)))();
+        
     }, [dispatch, roomId]);
     
+    /**
+     * If the room doesn't exist, use react-router to navigate them back to the root directory.
+     */
     useEffect(() => {
         if(!Object.keys(viewingRoomData).length && completedRoomLoad) {
             navigate("/");
         }
     }, [navigate, viewingRoomData, completedRoomLoad]);
+
+    /**
+     * Using useMemo hook ensures socket connection is established once and not every time a component re-renders.
+     */
+    const socket = useMemo(() => io("http://127.0.0.1:3001", { transports: ["websocket"]}), []);
+
+    /**
+     * If the backend API call is processed and a room is returned, send a backend socket call.
+     */
+    useEffect(() => {
+        if(completedRoomLoad) {
+            socket.emit("join", viewingRoomData.id);
+        }
+    }, [socket, completedRoomLoad, viewingRoomData.id]);
+
+    /**
+     * Disconnect the socket upon component dismount.
+     */
+    useEffect(
+        () => 
+        () => {
+            socket.disconnect();
+            dispatch(resetViewingRoom());
+        }
+    ,[dispatch, socket]);
+    
     return (
         <div className="w-screen h-screen bg-slate-100 overflow-hidden">
             <Navbar />
