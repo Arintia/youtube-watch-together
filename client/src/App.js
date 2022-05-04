@@ -7,8 +7,13 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 function App() {
+
   const dispatch = useDispatch();
+  /**
+   * Tracks whether or not a user is currently trying to create a room(is on the input component)
+   */
   const isCreatingRoom = useSelector(state => state.room.isCreatingRoom);
+  
   return (
     <div className="w-screen h-screen bg-slate-100 overflow-hidden">
       <Navbar />
